@@ -14,14 +14,14 @@ export default defineConfig({
     port: 5174,
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:5000',
+        target: 'https://api.rareaestheticsgroup.com',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
       '/images': {
-        target: 'http://127.0.0.1:5000',
+        target: 'https://api.rareaestheticsgroup.com',
         changeOrigin: true,
-        secure: false,
+        secure: true,
       },
     },
   },
