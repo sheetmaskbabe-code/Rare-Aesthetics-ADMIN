@@ -10,7 +10,8 @@ import {
   PageHeader,
 } from '../types';
 
-const API_BASE = '/api';
+const rawApiUrl = (import.meta.env.VITE_API_URL as string | undefined) || '';
+const API_BASE = rawApiUrl ? `${rawApiUrl.replace(/\/$/, '')}/api` : '/api';
 const TOKEN_KEY = 'mra_admin_token';
 const ADMIN_KEY = 'Rare1357';
 
