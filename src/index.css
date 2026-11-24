@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+:root {
+  --color-lavender: #e4d6e0;
+  --color-orchid: #d5b2dd;
+  --color-plum: #5f3a68;
+  --color-deep-blue: #004f77;
+  --color-dark-plum: #35213b;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+/* Custom scrollbars for clean light aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Global White / Light Theme Overrides for Admin Panels & CMS */
+.bg-\[\#0b0f19\],
+.bg-\[\#0c0d14\] {
+  background-color: #f8fafc !important;
+}
+
+/* Backgrounds: Turn dark slate surfaces into clean crisp white cards */
+.bg-slate-950,
+.bg-slate-950\/95,
+.bg-slate-950\/90,
+.bg-slate-950\/80,
+.bg-slate-950\/70,
+.bg-slate-950\/60,
+.bg-slate-950\/50 {
+  background-color: #ffffff !important;
+}
+
+.bg-slate-900,
+.bg-slate-900\/95,
+.bg-slate-900\/90,
+.bg-slate-900\/80,
+.bg-slate-900\/70,
+.bg-slate-900\/60,
+.bg-slate-900\/50,
+.bg-slate-900\/40,
+.bg-slate-900\/30 {
+  background-color: #ffffff !important;
+}
+
+.bg-slate-800,
+.bg-slate-800\/80,
+.bg-slate-800\/60,
+.bg-slate-800\/50,
+.bg-slate-800\/40 {
+  background-color: #f1f5f9 !important;
+}
+
+/* Subtle modern borders */
+.border-slate-800,
+.border-slate-800\/90,
+.border-slate-800\/80,
+.border-slate-800\/60,
+.border-slate-800\/50,
+.border-slate-800\/40,
+.border-slate-700,
+.border-slate-700\/80,
+.border-slate-700\/60,
+.border-slate-700\/50 {
+  border-color: #e2e8f0 !important;
+}
+
+/* Form controls: Inputs, Textareas, Selects */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+textarea,
+select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #9810fa !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px #9810fa !important;
+}
+
+/* Typography contrast for light theme */
+h1.text-white,
+h2.text-white,
+h3.text-white,
+h4.text-white,
+h5.text-white,
+h6.text-white {
+  color: #0f172a !important;
+}
+
+/* Non-button div and span text */
+div.text-white:not([class*="bg-purple"]):not([class*="bg-indigo"]):not([class*="bg-emerald"]):not([class*="bg-rose"]):not([class*="bg-blue"]):not([class*="bg-amber"]),
+span.text-white:not([class*="bg-purple"]):not([class*="bg-indigo"]):not([class*="bg-emerald"]):not([class*="bg-rose"]):not([class*="bg-blue"]):not([class*="bg-amber"]) {
+  color: #0f172a !important;
+}
+
+/* Lighten slate text for readable contrast */
+.text-slate-300 {
+  color: #334155 !important;
+}
+
+.text-slate-400 {
+  color: #64748b !important;
+}
