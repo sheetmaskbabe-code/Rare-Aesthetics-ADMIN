@@ -8,6 +8,8 @@ yarn-error.log*
 .env
 .env.*
 *.env
+# Allow production API URL (public VITE_ var only — no secrets)
+!.env.production
 
 # Build outputs
 dist/
