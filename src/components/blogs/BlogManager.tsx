@@ -150,6 +150,8 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
       coverImage: '',
       published: true,
       date: new Date().toISOString().split('T')[0],
+      buttonText: 'Click here',
+      link: '/book-consultation',
     });
     setIsEditing(true);
   };
@@ -159,6 +161,8 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
       ...post,
       image: post.image || post.coverImage || '',
       coverImage: post.coverImage || post.image || '',
+      buttonText: post.buttonText || 'Click here',
+      link: post.link || '/book-consultation',
     });
     setIsEditing(true);
   };
@@ -200,11 +204,30 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
 
     try {
       setSaving(true);
+      const rawLink = (currentPost.link || '').trim();
+      const rawButtonText = (currentPost.buttonText || '').trim();
+      // Normalize bare domains to https so external CTA links work on the public site
+      const normalizedLink = !rawLink
+        ? '/book-consultation'
+        : rawLink.startsWith('/') ||
+            rawLink.startsWith('http://') ||
+            rawLink.startsWith('https://') ||
+            rawLink.startsWith('mailto:') ||
+            rawLink.startsWith('tel:')
+          ? rawLink
+          : `https://${rawLink}`;
+
+      const { _id, __v, createdAt, updatedAt, ...rest } = currentPost as BlogPost & {
+        __v?: number;
+      };
+
       const payload = {
-        ...currentPost,
+        ...rest,
         type: currentPost.type || (page === 'articles' ? 'article' : 'blog'),
         image: currentPost.image || currentPost.coverImage || '',
         coverImage: currentPost.coverImage || currentPost.image || '',
+        buttonText: rawButtonText || 'Click here',
+        link: normalizedLink,
       };
       await api.savePost(payload);
       setIsEditing(false);
@@ -579,16 +602,42 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1">Article Content</label>
-                <textarea
-                  rows={6}
-                  value={currentPost.content || ''}
-                  onChange={(e) => setCurrentPost({ ...currentPost, content: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500 font-mono"
-                  placeholder="Markdown or formatted text..."
-                  required
-                />
+              {/* Action Button & Link */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 rounded-xl border border-slate-800/80 bg-slate-950/50">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Bottom Button Text
+                  </label>
+                  <input
+                    type="text"
+                    value={currentPost.buttonText ?? ''}
+                    onChange={(e) =>
+                      setCurrentPost((prev) => ({ ...prev, buttonText: e.target.value }))
+                    }
+                    placeholder="e.g. Click here"
+                    className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500"
+                  />
+                  <span className="text-[10px] text-slate-500 mt-1 block">
+                    Defaults to "Click here" if left blank
+                  </span>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Button Link (Destination URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={currentPost.link ?? ''}
+                    onChange={(e) =>
+                      setCurrentPost((prev) => ({ ...prev, link: e.target.value }))
+                    }
+                    placeholder="e.g. https://example.com or /book-consultation"
+                    className="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500"
+                  />
+                  <span className="text-[10px] text-slate-500 mt-1 block">
+                    Can be external URL or internal page route
+                  </span>
+                </div>
               </div>
 
               <div className="flex items-center gap-3 pt-2">

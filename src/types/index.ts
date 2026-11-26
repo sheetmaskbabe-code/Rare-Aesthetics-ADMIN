@@ -15,6 +15,8 @@ export interface BlogPost {
   type?: 'article' | 'blog';
   date?: string;
   createdAt?: string;
+  link?: string;
+  buttonText?: string;
 }
 
 export interface PortfolioItem {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Plus,
   Search,
@@ -77,6 +77,8 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
   portfolio,
   onRefresh,
 }) => {
+  const [localPortfolio, setLocalPortfolio] = useState<PortfolioItem[]>(portfolio || []);
+  const [loadingPortfolio, setLoadingPortfolio] = useState<boolean>(portfolio.length === 0);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isEditing, setIsEditing] = useState(false);
@@ -84,6 +86,33 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
   const [uploadingImage, setUploadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // Sync if prop updates
+  useEffect(() => {
+    if (portfolio && portfolio.length > 0) {
+      setLocalPortfolio(portfolio);
+      setLoadingPortfolio(false);
+    }
+  }, [portfolio]);
+
+  // Fetch directly on mount to guarantee portfolio projects are always loaded
+  const fetchPortfolio = useCallback(async () => {
+    try {
+      setLoadingPortfolio(true);
+      const items = await api.getPortfolio();
+      if (Array.isArray(items) && items.length > 0) {
+        setLocalPortfolio(items);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch portfolio in PortfolioManager:', err);
+    } finally {
+      setLoadingPortfolio(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPortfolio();
+  }, [fetchPortfolio]);
 
   const [showProcessModal, setShowProcessModal] = useState(false);
   const [editingDetailItem, setEditingDetailItem] = useState<PortfolioItem | null>(null);
@@ -179,6 +208,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
     try {
       setSavingDetail(true);
       await api.savePortfolioItem(editingDetailItem);
+      await fetchPortfolio();
       onRefresh();
       setEditingDetailItem(null);
     } catch (err: any) {
@@ -220,9 +250,9 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
     }
   };
 
-  const categories = ['all', ...Array.from(new Set(portfolio.map((p) => p.category).filter(Boolean)))];
+  const categories = ['all', ...Array.from(new Set(localPortfolio.map((p) => p.category).filter(Boolean)))];
 
-  const filtered = portfolio.filter((item) => {
+  const filtered = localPortfolio.filter((item) => {
     const matchSearch =
       (item.title || '').toLowerCase().includes(search.toLowerCase()) ||
       (item.description || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -245,7 +275,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
       image: '',
       coverImage: '',
       featured: true,
-      order: portfolio.length + 1,
+      order: localPortfolio.length + 1,
     });
     setIsEditing(true);
   };
@@ -303,6 +333,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
       };
       await api.savePortfolioItem(payload);
       setIsEditing(false);
+      await fetchPortfolio();
       onRefresh();
     } catch (err: any) {
       alert(`Failed to save portfolio item: ${err.message}`);
@@ -317,6 +348,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
     try {
       setDeletingId(id);
       await api.deletePortfolioItem(id);
+      await fetchPortfolio();
       onRefresh();
     } catch (err: any) {
       alert(`Failed to delete item: ${err.message}`);
@@ -331,6 +363,7 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
         ...item,
         featured: !item.featured,
       });
+      await fetchPortfolio();
       onRefresh();
     } catch (err: any) {
       alert(`Failed to update status: ${err.message}`);
@@ -388,7 +421,12 @@ export const PortfolioManager: React.FC<PortfolioManagerProps> = ({
       </div>
 
       {/* Grid */}
-      {filtered.length === 0 ? (
+      {loadingPortfolio ? (
+        <div className="flex flex-col items-center justify-center py-20 gap-3 bg-slate-900/40 border border-slate-800/80 rounded-2xl">
+          <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+          <p className="text-xs text-slate-400">Loading portfolio projects...</p>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-slate-900/40 border border-slate-800/80 rounded-2xl">
           <p className="text-xs text-slate-400">No portfolio projects found matching your criteria.</p>
         </div>

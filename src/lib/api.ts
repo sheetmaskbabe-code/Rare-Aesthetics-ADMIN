@@ -10,7 +10,9 @@ import {
   PageHeader,
 } from '../types';
 
-const rawApiUrl = (import.meta.env.VITE_API_URL as string | undefined) || '';
+const envApiUrl = (import.meta.env.VITE_API_URL as string | undefined) || '';
+// In dev, use relative /api to route through Vite proxy (eliminates CORS and 304 cache origin collision)
+const rawApiUrl = import.meta.env.DEV ? '' : envApiUrl;
 const API_BASE = rawApiUrl ? `${rawApiUrl.replace(/\/$/, '')}/api` : '/api';
 const TOKEN_KEY = 'mra_admin_token';
 const ADMIN_KEY = 'Rare1357';
@@ -48,6 +50,7 @@ async function request<T>(
   }
 
   let res = await fetch(`${API_BASE}${endpoint}`, {
+    cache: 'no-store',
     ...options,
     headers,
   });
@@ -56,6 +59,7 @@ async function request<T>(
   if (res.status === 503) {
     await new Promise((resolve) => setTimeout(resolve, 1500));
     res = await fetch(`${API_BASE}${endpoint}`, {
+      cache: 'no-store',
       ...options,
       headers,
     });
@@ -80,6 +84,7 @@ export const api = {
   ): Promise<{ requireOtp?: boolean; email?: string; success?: boolean; token?: string; message?: string }> {
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password }),
     });
@@ -93,6 +98,7 @@ export const api = {
   async verifyOtp(otp: string): Promise<{ success: boolean; token: string }> {
     const res = await fetch(`${API_BASE}/auth/verify-otp`, {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ otp }),
     });
@@ -106,6 +112,7 @@ export const api = {
   async resendOtp(password: string): Promise<{ success: boolean; message: string }> {
     const res = await fetch(`${API_BASE}/auth/resend-otp`, {
       method: 'POST',
+      cache: 'no-store',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password }),
     });

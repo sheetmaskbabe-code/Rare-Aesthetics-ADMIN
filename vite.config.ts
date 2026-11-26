@@ -13,15 +13,15 @@ export default defineConfig({
   server: {
     port: 5174,
     proxy: {
+      // Local backend has the updated BlogPost schema (link/buttonText).
+      // Production api.rareaestheticsgroup.com still strips those fields until redeployed.
       '/api': {
-        target: 'https://api.rareaestheticsgroup.com',
+        target: 'http://localhost:5000',
         changeOrigin: true,
-        secure: true,
       },
       '/images': {
-        target: 'https://api.rareaestheticsgroup.com',
+        target: 'http://localhost:5000',
         changeOrigin: true,
-        secure: true,
       },
     },
   },
