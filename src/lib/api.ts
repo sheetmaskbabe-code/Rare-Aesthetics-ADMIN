@@ -47,10 +47,19 @@ async function request<T>(
     headers.set('Content-Type', 'application/json');
   }
 
-  const res = await fetch(`${API_BASE}${endpoint}`, {
+  let res = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
     headers,
   });
+
+  // If server/database was waking up from idle (503), retry once
+  if (res.status === 503) {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    res = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers,
+    });
+  }
 
   const contentType = res.headers.get('content-type');
   const isJson = contentType && contentType.includes('application/json');

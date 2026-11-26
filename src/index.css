@@ -98,9 +98,9 @@ textarea::placeholder {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: #9810fa !important;
+  border-color: #8524f9 !important;
   outline: none !important;
-  box-shadow: 0 0 0 1px #9810fa !important;
+  box-shadow: 0 0 0 1px #8524f9 !important;
 }
 
 /* Typography contrast for light theme */
