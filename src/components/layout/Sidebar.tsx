@@ -2,6 +2,7 @@ import React from 'react';
 import {
   LayoutDashboard,
   FileText,
+  BookOpen,
   Briefcase,
   Mail,
   CalendarCheck,
@@ -55,7 +56,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'about', label: 'About Page CMS', icon: Info },
     { id: 'services', label: 'Services Page CMS', icon: FlaskConical },
     { id: 'portfolio', label: 'Portfolio CMS', icon: Briefcase },
-    { id: 'blogs', label: 'Articles CMS', icon: FileText },
+    { id: 'articles', label: 'Articles CMS', icon: FileText },
+    { id: 'blogs', label: 'Blog Page CMS', icon: BookOpen },
     { id: 'contact', label: 'Contact Page CMS', icon: MessageSquare },
     { id: 'process', label: 'Process & Approach CMS', icon: Workflow },
   ];

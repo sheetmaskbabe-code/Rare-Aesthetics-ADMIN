@@ -205,6 +205,7 @@ export type AdminTab =
   | 'about'
   | 'services'
   | 'portfolio'
+  | 'articles'
   | 'blogs'
   | 'contact'
   | 'process'

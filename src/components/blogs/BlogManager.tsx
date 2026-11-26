@@ -66,9 +66,18 @@ const DEFAULT_BLOG_SLIDES: HeroSlide[] = [
 interface BlogManagerProps {
   blogs: BlogPost[];
   onRefresh: () => void;
+  page?: 'blog' | 'articles';
+  pageLabel?: string;
+  pageRoute?: string;
 }
 
-export const BlogManager: React.FC<BlogManagerProps> = ({ blogs, onRefresh }) => {
+export const BlogManager: React.FC<BlogManagerProps> = ({
+  blogs,
+  onRefresh,
+  page = 'blog',
+  pageLabel = 'Blog Page',
+  pageRoute = '/blog',
+}) => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isEditing, setIsEditing] = useState(false);
@@ -196,11 +205,11 @@ export const BlogManager: React.FC<BlogManagerProps> = ({ blogs, onRefresh }) =>
 
   return (
     <div className="space-y-6">
-      {/* Blog Page Header Slider Editor */}
+      {/* Page Header Slider Editor */}
       <PageHeaderEditor
-        page="blog"
-        pageLabel="Blog / Insights"
-        pageRoute="/blog"
+        page={page}
+        pageLabel={pageLabel}
+        pageRoute={pageRoute}
         defaultSlides={DEFAULT_BLOG_SLIDES}
       />
 

@@ -12,7 +12,7 @@ import { HeroSlide } from '../../types';
 import { api } from '../../lib/api';
 
 interface PageHeaderEditorProps {
-  page: 'about' | 'services' | 'portfolio' | 'blog' | 'contact' | 'process';
+  page: 'about' | 'services' | 'portfolio' | 'blog' | 'articles' | 'contact' | 'process';
   pageLabel: string;
   pageRoute: string;
   defaultSlide?: HeroSlide;

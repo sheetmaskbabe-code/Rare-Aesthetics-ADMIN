@@ -39,9 +39,13 @@ export const Header: React.FC<HeaderProps> = ({
       title: 'Portfolio CMS',
       desc: 'Customize portfolio hero slider, formulation case studies and client projects',
     },
-    blogs: {
+    articles: {
       title: 'Articles CMS',
       desc: 'Customize articles hero slider, cosmetic chemistry articles and editorial notes',
+    },
+    blogs: {
+      title: 'Blog Page CMS',
+      desc: 'Customize blog hero slider, published blog posts, and beauty insights',
     },
     contact: {
       title: 'Contact Page CMS',

@@ -143,8 +143,24 @@ export default function App() {
             <PortfolioManager portfolio={portfolio} onRefresh={loadData} />
           )}
 
+          {activeTab === 'articles' && (
+            <BlogManager
+              blogs={blogs}
+              onRefresh={loadData}
+              page="articles"
+              pageLabel="Articles / Editorial Showcase"
+              pageRoute="/articles"
+            />
+          )}
+
           {activeTab === 'blogs' && (
-            <BlogManager blogs={blogs} onRefresh={loadData} />
+            <BlogManager
+              blogs={blogs}
+              onRefresh={loadData}
+              page="blog"
+              pageLabel="Blog Page Showcase"
+              pageRoute="/blog"
+            />
           )}
 
           {activeTab === 'contact' && <ContactManager />}
