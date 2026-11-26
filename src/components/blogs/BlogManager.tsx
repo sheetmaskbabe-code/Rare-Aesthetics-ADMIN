@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Plus,
   Search,
@@ -78,6 +78,8 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
   pageLabel = 'Blog Page',
   pageRoute = '/blog',
 }) => {
+  const [localPosts, setLocalPosts] = useState<BlogPost[]>(blogs || []);
+  const [loadingPosts, setLoadingPosts] = useState(blogs.length === 0);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isEditing, setIsEditing] = useState(false);
@@ -86,9 +88,36 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
   const [saving, setSaving] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const categories = ['all', ...Array.from(new Set(blogs.map((b) => b.category).filter(Boolean)))];
+  // Sync if prop updates
+  useEffect(() => {
+    if (blogs && blogs.length > 0) {
+      setLocalPosts(blogs);
+      setLoadingPosts(false);
+    }
+  }, [blogs]);
 
-  const filtered = blogs.filter((b) => {
+  // Fetch directly on mount to guarantee articles are always loaded
+  const fetchPosts = useCallback(async () => {
+    try {
+      setLoadingPosts(true);
+      const posts = await api.getPosts();
+      if (Array.isArray(posts) && posts.length > 0) {
+        setLocalPosts(posts);
+      }
+    } catch (err) {
+      console.warn('Failed to fetch posts in BlogManager:', err);
+    } finally {
+      setLoadingPosts(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  const categories = ['all', ...Array.from(new Set(localPosts.map((b) => b.category).filter(Boolean)))];
+
+  const filtered = localPosts.filter((b) => {
     const matchSearch =
       (b.title || '').toLowerCase().includes(search.toLowerCase()) ||
       (b.excerpt || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -169,6 +198,7 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
       };
       await api.savePost(payload);
       setIsEditing(false);
+      await fetchPosts();
       onRefresh();
     } catch (err: any) {
       alert(`Failed to save post: ${err.message}`);
@@ -178,11 +208,12 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this blog post?')) return;
+    if (!confirm('Are you sure you want to delete this post?')) return;
 
     try {
       setDeletingId(id);
       await api.deletePost(id);
+      await fetchPosts();
       onRefresh();
     } catch (err: any) {
       alert(`Failed to delete post: ${err.message}`);
@@ -197,6 +228,7 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
         ...post,
         published: !post.published,
       });
+      await fetchPosts();
       onRefresh();
     } catch (err: any) {
       alert(`Failed to update status: ${err.message}`);
@@ -254,9 +286,14 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
       </div>
 
       {/* Posts List */}
-      {filtered.length === 0 ? (
+      {loadingPosts ? (
+        <div className="text-center py-16 bg-slate-900/40 border border-slate-800/80 rounded-2xl flex flex-col items-center justify-center gap-3">
+          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
+          <p className="text-xs text-slate-400">Loading {page === 'articles' ? 'articles' : 'blog posts'}...</p>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-slate-900/40 border border-slate-800/80 rounded-2xl">
-          <p className="text-xs text-slate-400">No blog posts found matching your filters.</p>
+          <p className="text-xs text-slate-400">No {page === 'articles' ? 'articles' : 'blog posts'} found matching your filters.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
