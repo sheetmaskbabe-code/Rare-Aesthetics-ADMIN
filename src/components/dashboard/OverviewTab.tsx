@@ -28,7 +28,7 @@ export const OverviewTab: React.FC<OverviewTabProps> = ({
 
   const stats = [
     {
-      label: 'Blog Posts',
+      label: 'Articles',
       value: blogs.length,
       sub: `${blogs.filter((b) => b.published).length} published`,
       icon: FileText,

@@ -40,8 +40,8 @@ export const Header: React.FC<HeaderProps> = ({
       desc: 'Customize portfolio hero slider, formulation case studies and client projects',
     },
     blogs: {
-      title: 'Blog Posts CMS',
-      desc: 'Customize blog hero slider, cosmetic chemistry articles and editorial notes',
+      title: 'Articles CMS',
+      desc: 'Customize articles hero slider, cosmetic chemistry articles and editorial notes',
     },
     contact: {
       title: 'Contact Page CMS',
