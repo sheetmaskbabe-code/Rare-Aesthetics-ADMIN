@@ -12,6 +12,7 @@ export interface BlogPost {
   image?: string;
   coverImage?: string;
   published: boolean;
+  type?: 'article' | 'blog';
   date?: string;
   createdAt?: string;
 }

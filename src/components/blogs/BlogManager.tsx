@@ -115,9 +115,17 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
     fetchPosts();
   }, [fetchPosts]);
 
-  const categories = ['all', ...Array.from(new Set(localPosts.map((b) => b.category).filter(Boolean)))];
+  // Filter by page type: articles page shows articles; blog page shows blogs
+  const typeFiltered = localPosts.filter((b) => {
+    if (page === 'articles') {
+      return b.type === 'article' || !b.type;
+    }
+    return b.type === 'blog';
+  });
 
-  const filtered = localPosts.filter((b) => {
+  const categories = ['all', ...Array.from(new Set(typeFiltered.map((b) => b.category).filter(Boolean)))];
+
+  const filtered = typeFiltered.filter((b) => {
     const matchSearch =
       (b.title || '').toLowerCase().includes(search.toLowerCase()) ||
       (b.excerpt || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -134,7 +142,8 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
       title: '',
       excerpt: '',
       content: '',
-      category: 'Cosmetic Science',
+      category: page === 'articles' ? 'Cosmetic Science' : 'General',
+      type: page === 'articles' ? 'article' : 'blog',
       author: 'Lindi-Grace',
       readTime: '4 min read',
       image: '',
@@ -193,6 +202,7 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
       setSaving(true);
       const payload = {
         ...currentPost,
+        type: currentPost.type || (page === 'articles' ? 'article' : 'blog'),
         image: currentPost.image || currentPost.coverImage || '',
         coverImage: currentPost.coverImage || currentPost.image || '',
       };
@@ -281,7 +291,7 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
           className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-purple-600/20 transition-all cursor-pointer"
         >
           <Plus className="w-4 h-4" />
-          <span>New Article</span>
+          <span>{page === 'articles' ? 'New Article' : 'New Blog Post'}</span>
         </button>
       </div>
 
@@ -400,7 +410,9 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
           <div className="w-full max-w-2xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden my-8">
             <div className="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
               <h3 className="text-sm font-bold text-white">
-                {currentPost.title ? `Edit Article: ${currentPost.title}` : 'Create New Article'}
+                {currentPost.title
+                  ? `Edit ${page === 'articles' ? 'Article' : 'Blog Post'}: ${currentPost.title}`
+                  : `Create New ${page === 'articles' ? 'Article' : 'Blog Post'}`}
               </h3>
               <button
                 onClick={() => setIsEditing(false)}
@@ -455,7 +467,18 @@ export const BlogManager: React.FC<BlogManagerProps> = ({
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">Destination</label>
+                  <select
+                    value={currentPost.type || (page === 'articles' ? 'article' : 'blog')}
+                    onChange={(e) => setCurrentPost({ ...currentPost, type: e.target.value as 'article' | 'blog' })}
+                    className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500"
+                  >
+                    <option value="article">Article (/articles)</option>
+                    <option value="blog">Blog (/blog)</option>
+                  </select>
+                </div>
                 <div>
                   <label className="block text-xs font-semibold text-slate-300 mb-1">Category</label>
                   <input
