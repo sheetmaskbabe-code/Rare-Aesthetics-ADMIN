@@ -379,7 +379,7 @@ export const AboutContentManager: React.FC = () => {
                 rows={3}
                 value={
                   content?.companyParagraph2 ??
-                  'We partner with founders and brands who want a refined pathway from concept to product — combining research, formulation thinking, evaluation support and practical production coordination.'
+                  'We partner with founders and brands across the globe, from North America, Europe, Australia, The Middle East and Africa who want to move from idea to an innovative cosmetic product with clarity and care'
                 }
                 onChange={(e) => setContent({ ...(content || {}), companyParagraph2: e.target.value })}
                 className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500 leading-relaxed"
