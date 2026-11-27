@@ -15,6 +15,7 @@ export interface BlogPost {
   type?: 'article' | 'blog';
   date?: string;
   createdAt?: string;
+  updatedAt?: string;
   link?: string;
   buttonText?: string;
 }
