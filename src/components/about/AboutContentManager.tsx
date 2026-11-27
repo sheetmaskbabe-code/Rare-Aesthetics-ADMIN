@@ -534,7 +534,7 @@ export const AboutContentManager: React.FC = () => {
                 rows={3}
                 value={
                   content?.founderBio2 ??
-                  'We partner with founders and brands across the globe, from North America, Europe, Australia, The Middle East and Africa who want to move from idea to an innovative cosmetic product with clarity and care'
+                  'Building The RA Group, with a vision to redefine the beauty and cosmetics industry through innovative formulations, premium-quality products, and science-backed skincare solutions.'
                 }
                 onChange={(e) => setContent({ ...(content || {}), founderBio2: e.target.value })}
                 className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-purple-500 leading-relaxed"
